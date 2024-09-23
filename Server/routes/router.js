@@ -83,9 +83,9 @@ router.post('/login', async (req, res) => {
                 // Set the cookie
                 res.cookie("Amazonweb", token, {
                     expires: new Date(Date.now() + 1000 * 60 * 60 * 24 * 7), // 1 week
-                    httpOnly: true,
-                    secure: true, // Ensure this is false for local development
-                    sameSite: 'none' // Required for cross-origin requests
+                    httpOnly: true, // Prevents access from JavaScript
+                    secure: process.env.NODE_ENV === 'production', // Set to true only in production
+                    sameSite: 'None' // Required for cross-origin requests
                 });
 
                 return res.status(201).json(userLogin);
