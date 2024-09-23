@@ -59,41 +59,45 @@ router.post("/register", async (req, res) => {
     }
 })
 
-router.post('/login', async (req, res) => {
-    const { email, password } = req.body
-    console.log(req.body)
 
+router.post('/login', async (req, res) => {
+    const { email, password } = req.body;
+    
     if (!email || !password) {
-        res.status(400).json({ error: "Fill every field" })
+        return res.status(400).json({ error: "Fill every field" });
     }
 
     try {
-        const userLogin = await USER.findOne({ email: email })
+        const userLogin = await USER.findOne({ email: email });
+
         if (userLogin) {
-            const isMatched = await bcrypt.compare(password, userLogin.password)
-            // console.log(isMatched)
+            const isMatched = await bcrypt.compare(password, userLogin.password);
 
             if (!isMatched) {
-                res.status(400).json({ error: "Invalid User" })
+                return res.status(400).json({ error: "Invalid User" });
             } else {
-                const token = await userLogin.generateAuthToken()
-                console.log(token)
+                // Generate token
+                const token = await userLogin.generateAuthToken();
+                console.log("Generated Token:", token); // Log the generated token
 
+                // Set the cookie
                 res.cookie("Amazonweb", token, {
-                    expires: new Date(Date.now() + 1000 * 60 * 60 * 24 * 7),
-                    httpOnly: true
-                })
-                res.status(201).json(userLogin)
+                    expires: new Date(Date.now() + 1000 * 60 * 60 * 24 * 7), // 1 week
+                    httpOnly: true,
+                    secure: true, // Ensure this is false for local development
+                    sameSite: 'none' // Required for cross-origin requests
+                });
+
+                return res.status(201).json(userLogin);
             }
-        }
-        else {
-            res.status(400).json({ error: "Invalid User" })
+        } else {
+            return res.status(400).json({ error: "Invalid User" });
         }
     } catch (error) {
-        res.status(400).json({ error: "Invalid Details" })
+        console.error("Login Error:", error); // Log any errors during login
+        return res.status(400).json({ error: "Invalid Details" });
     }
-
-})
+});
 
 
 router.post('/addtocart/:id', authenticate, async (req, res) => {
@@ -131,14 +135,20 @@ router.get('/cartdetails', authenticate, async (req, res) => {
     }
 })
 
+
+
 router.get('/validUser', authenticate, async (req, res) => {
     try {
-        const valid = await USER.findOne({ _id: req.userID })
-        res.status(201).json(valid)
+        const valid = await USER.findOne({ _id: req.userID });
+        if (!valid) {
+            return res.status(404).json({ error: 'User not found' });
+        }
+        res.status(200).json(valid); // Use 200 for successful GET request
     } catch (e) {
-        console.log(e)
+        console.log(e);
+        res.status(500).json({ error: 'Internal Server Error' });
     }
-})
+});
 
 router.delete('/remove/:id', authenticate, async (req, res) => {
     try {

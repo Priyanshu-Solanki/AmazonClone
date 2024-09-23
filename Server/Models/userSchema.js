@@ -51,16 +51,13 @@ userSchema.pre("save", async function (next) {
 })
 
 //generate token
-userSchema.methods.generateAuthToken = async function () {
-    try {
-        let token = jwt.sign({ _id: this._id }, secretKey)
-        this.tokens = this.tokens.concat({ token: token })
-        await this.save()
-        return token
-    } catch (e) {
-        console.log("error: " + e)
-    }
-}
+userSchema.methods.generateAuthToken = async function() {
+    const user = this;
+    const token = jwt.sign({ _id: user._id.toString() }, secretKey, { expiresIn: '7d' }); // Ensure `secretKey` is defined
+    user.tokens = user.tokens.concat({ token }); // Assuming `tokens` is an array in the user schema
+    await user.save();
+    return token;
+};
 
 userSchema.methods.addCartData = async function (cart) {
     try {

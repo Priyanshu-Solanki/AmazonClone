@@ -17,13 +17,13 @@ var corsOptions = {
   credentials: true, 
 };
 
-app.use(cors(corsOptions));
 app.use(express.json())
+app.use(cors(corsOptions));
 app.use(cookieParser(""))
 
 app.use(router)
 
-app.listen(4000, () => {
+app.listen(process.env.Port || 4000, () => {
     console.log("Port 4000")
 })
 
