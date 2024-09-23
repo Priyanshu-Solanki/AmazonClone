@@ -1,6 +1,5 @@
 const jwt = require("jsonwebtoken")
 const user = require("../Models/userSchema")
-const { cond } = require("lodash")
 const secretKey = process.env.KEY
 
 const authenticate = async function (req, res, next) {

@@ -13,7 +13,8 @@ const router = require("./routes/router")
 
 
 var corsOptions = {
-  origin: "https://amazon-clone-priyanshu.netlify.app"
+  origin: "https://amazon-clone-priyanshu.netlify.app",
+  credentials: true, 
 };
 
 app.use(cors(corsOptions));
