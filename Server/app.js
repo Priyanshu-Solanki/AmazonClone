@@ -13,7 +13,7 @@ const router = require("./routes/router")
 
 
 var corsOptions = {
-  origin: "http://localhost:3000"
+  origin: "https://amazon-clone-priyanshu.netlify.app"
 };
 
 app.use(cors(corsOptions));
