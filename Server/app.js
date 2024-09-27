@@ -11,16 +11,15 @@ const DefaultData = require("./defaultData")
 const cors = require("cors")
 const router = require("./routes/router")
 
-
 var corsOptions = {
-  origin: "https://amazon-clone-priyanshu.netlify.app",
+  // origin: "https://amazon-clone-priyanshu.netlify.app",
+  origin: "http://localhost:3000",
   credentials: true, 
 };
 
 app.use(express.json())
 app.use(cors(corsOptions));
 app.use(cookieParser(""))
-
 app.use(router)
 
 app.listen(process.env.Port || 4000, () => {

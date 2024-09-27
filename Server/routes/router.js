@@ -4,14 +4,13 @@ const router = new express.Router()
 const Products = require("../Models/productSchema")
 const USER = require("../Models/userSchema")
 const bcrypt = require("bcryptjs")
-const { http } = require("follow-redirects")
 const products = require("../Constant/productdata")
 const authenticate = require("../Middleware/authenticate")
 
 router.get("/getproducts", async (req, res) => {
     try {
         const productdata = await Products.find()
-        console.log("**************************" + productdata)
+        // console.log("**************************" + productdata)
         res.status(201).json(productdata)
     } catch (e) {
         console.log("error: " + e)
@@ -84,8 +83,6 @@ router.post('/login', async (req, res) => {
                 res.cookie("Amazonweb", token, {
                     expires: new Date(Date.now() + 1000 * 60 * 60 * 24 * 7), // 1 week
                     httpOnly: true, // Prevents access from JavaScript
-                    secure: process.env.NODE_ENV === 'production', // Set to true only in production
-                    sameSite: 'None' // Required for cross-origin requests
                 });
 
                 return res.status(201).json(userLogin);
