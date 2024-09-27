@@ -61,7 +61,7 @@ router.post("/register", async (req, res) => {
 
 router.post('/login', async (req, res) => {
     const { email, password } = req.body;
-    
+
     if (!email || !password) {
         return res.status(400).json({ error: "Fill every field" });
     }
@@ -83,6 +83,8 @@ router.post('/login', async (req, res) => {
                 res.cookie("Amazonweb", token, {
                     expires: new Date(Date.now() + 1000 * 60 * 60 * 24 * 7), // 1 week
                     httpOnly: true, // Prevents access from JavaScript
+                    secure: process.env.NODE_ENV === 'production', // Only true in production with HTTPS
+                    sameSite: 'None' // Necessary for cross-origin requests if applicable
                 });
 
                 return res.status(201).json(userLogin);
